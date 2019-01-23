@@ -6,6 +6,8 @@ import App from './app'
 import store from './redux'
 import history from './history'
 
+import './style/materialize.min.css'
+
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
