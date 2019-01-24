@@ -1,15 +1,26 @@
-let user = { email:1, password:1 }
+import { userData } from './data'
 
-export const singInApi = (email, password) => {
+class Api {
+
+  singInApi(email, password) {
 
     const promise = new Promise((resolve, reject) => {
-        debugger;
-        setTimeout(() => {
-          resolve({user})
-        }, 1000)
-      
-      });
 
-      return promise
+      setTimeout(() => {
+        debugger
+        const user = userData.users.filter(user => email === user.email && password === user.password)
+
+        if(user.length === 1) {
+          resolve(user[0].answer)
+        } 
+        else {
+          resolve(userData.error)
+        }
+      }, 1000)
+    })
+
+    return promise
+  }
 }
 
+export default Api

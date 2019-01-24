@@ -5,7 +5,8 @@ import { call, put, takeEvery, take, all, apply } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { replace } from 'connected-react-router'
 
-import { singInApi } from '../api'
+import Api from '../api'
+import { isNull } from 'util';
 
 /**
  * Constants
@@ -25,7 +26,8 @@ export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
  * */
 
 export const ReducerRecord = Record({
-    user: null
+    user: null,
+    error: null
 })
 
 export default function reducer(state = new ReducerRecord(), action) {
@@ -34,7 +36,13 @@ export default function reducer(state = new ReducerRecord(), action) {
     switch (type) {
 
         case SIGN_IN_SUCCESS:
-            return state.set('user', payload.user)
+            return state
+                .set('user', payload.user)
+                .set('error', null)
+            break;
+
+        case SIGN_IN_ERROR:debugger
+            return state.set('error', payload.error)
             break;
 
         case SIGN_OUT_SUCCESS:
@@ -51,6 +59,7 @@ export default function reducer(state = new ReducerRecord(), action) {
  * */
 
 export const userSelector = (state) => state[moduleName].user
+export const errorSelector = (state) => state[moduleName].error
 export const isAuthorizedSelector = createSelector(
     userSelector,
     (user) => !!user
@@ -79,14 +88,24 @@ export function signOut() {
  **/
 
 export function* signInSaga({ payload }) {
-    
-    const { email, password } = payload
-    const user = yield call(singInApi)
 
-    yield put({
-        type: SIGN_IN_SUCCESS,
-        payload: { user }
-    })
+    const { email, password } = payload
+    const api = new Api
+
+    const answer = yield call(api.singInApi, email, password)
+
+    if (answer.status === 'ok') {
+        yield put({
+            type: SIGN_IN_SUCCESS,
+            payload: { user: answer.data }
+        })
+    }
+    else {
+        yield put({
+            type: SIGN_IN_ERROR,
+            payload: { error: answer.message }
+        })
+    }
 }
 
 export function* saga() {
