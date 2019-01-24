@@ -1,5 +1,7 @@
 import React, { Fragment, Component } from 'react'
 import { NavLink } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { isAuthorizedSelector, signOut } from '../../ducks/auth'
 
 let menuItems = [
     {
@@ -9,10 +11,6 @@ let menuItems = [
     {
         to: "profile",
         text: "Профиль"
-    },
-    {
-        to: "signin",
-        text: "Войти"
     }
 ]
 
@@ -33,6 +31,12 @@ class Navigation extends Component {
                             )
                         }
 
+                        <li>
+                            {
+                                !this.props.isAuthorized ?  <NavLink to='/signin'>Войти</NavLink> : <a onClick={this.props.signOut}>Выйти</a>
+                            }
+                        </li>
+
                     </ul>
                 </div>
             </nav>
@@ -40,4 +44,9 @@ class Navigation extends Component {
     }
 }
 
-export default Navigation
+export default connect(
+    (state) => ({
+        isAuthorized: isAuthorizedSelector(state)
+    }),
+    { signOut }
+)(Navigation)

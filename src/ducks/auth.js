@@ -11,22 +11,19 @@ import { singInApi } from '../api'
  * Constants
  * */
 export const moduleName = 'auth'
+
 const prefix = `${appName}/${moduleName}`
 
 export const SIGN_IN_REQUEST = `${prefix}/SIGN_IN_REQUEST`
 export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
-export const SIGN_IN_LIMIT = `${prefix}/SIGN_IN_LIMIT`
 
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
-
-export const SIGN_UP_REQUEST = `${prefix}/SIGN_UP_REQUEST`
-export const SIGN_UP_SUCCESS = `${prefix}/SIGN_UP_SUCCESS`
-export const SIGN_UP_ERROR = `${prefix}/SIGN_UP_ERROR`
 
 /**
  * Reducer
  * */
+
 export const ReducerRecord = Record({
     user: null
 })
@@ -35,9 +32,14 @@ export default function reducer(state = new ReducerRecord(), action) {
     const { type, payload } = action
 
     switch (type) {
+
         case SIGN_IN_SUCCESS:
-        debugger
             return state.set('user', payload.user)
+            break;
+
+        case SIGN_OUT_SUCCESS:
+            return state.set('user', null)
+            break;
 
         default:
             return state
@@ -65,6 +67,13 @@ export function signIn(email, password) {
     }
 }
 
+export function signOut() {
+    return {
+        type: SIGN_OUT_SUCCESS,
+        payload: null
+    }
+}
+
 /**
  * Sagas
  **/
@@ -72,13 +81,8 @@ export function signIn(email, password) {
 export function* signInSaga({ payload }) {
     
     const { email, password } = payload
+    const user = yield call(singInApi)
 
-   
-debugger
-    const user = yield call(
-        singInApi
-    )
-    debugger
     yield put({
         type: SIGN_IN_SUCCESS,
         payload: { user }
