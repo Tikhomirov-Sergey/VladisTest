@@ -1,4 +1,4 @@
-import { userData, newsData } from './data'
+import { userData, newsData, profileData } from './data'
 
 class Api {
 
@@ -30,7 +30,7 @@ class Api {
     const promise = new Promise((resolve, reject) => {
 
       setTimeout(() => {
-        
+
         const user = userData.users.filter(user => accessToken === user.accessToken)
 
         if (user.length === 1) {
@@ -39,7 +39,6 @@ class Api {
         else {
           resolve(userData.error)
         }
-
       }, 1000)
     })
 
@@ -57,6 +56,26 @@ class Api {
 
         resolve(newsData.answer)
 
+      }, 1000)
+    })
+
+    return promise
+  }
+
+  static getProfile(id) {
+
+    const promise = new Promise((resolve, reject) => {
+
+      setTimeout(() => {debugger
+
+        const profile = profileData.filter(profile => Number.parseInt(id) === Number.parseInt(profile.userId))
+
+        if (profile.length === 1) {
+          resolve(profile[0].answer)
+        }
+        else {
+          resolve({status:'ok', data:null})
+        }
       }, 1000)
     })
 

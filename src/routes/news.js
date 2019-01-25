@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { loadNews, newsSelector, loadingSelector } from '../ducks/news'
+import { loadNews, newsSelector, loadingSelector, loadedSelector } from '../ducks/news'
 import { connect } from 'react-redux'
 import { Container } from 'react-materialize'
 
@@ -13,6 +13,7 @@ class News extends Component {
   }
 
   render() {
+    
     if (this.props.loading || !this.props.news)
       return (
         <Container className='full-page-container'>
@@ -20,7 +21,7 @@ class News extends Component {
         </Container>
       )
 
-    if (!this.props.news.length)
+    if (this.props.loaded && !this.props.news.length)
       return (
         <Container>
           <h4>Увы, новостей сегодня нет =((</h4>
@@ -40,7 +41,8 @@ class News extends Component {
 export default connect(
   (state) => ({
     news: newsSelector(state),
-    loading: loadingSelector(state)
+    loading: loadingSelector(state),
+    loaded: loadedSelector(state)
   }),
   { loadNews }
 )(News)

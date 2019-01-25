@@ -7,6 +7,7 @@ import store from './redux'
 import history from './history'
 
 import './style/materialize.min.css'
+import './font/css/fontello.css'
 import './style/main.scss'
 
 ReactDOM.render(

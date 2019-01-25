@@ -11,6 +11,7 @@ import LocalStorageHelper from '../code/localStorageHelper'
 /**
  * Constants
  * */
+
 export const moduleName = 'auth'
 
 const prefix = `${appName}/${moduleName}`
@@ -43,21 +44,21 @@ export default function reducer(state = new ReducerRecord(), action) {
                 .set('user', payload.user)
                 .set('error', null)
                 .set('loading', false)
-            break;
+            break
 
         case SIGN_LOADING:
             return state.set('loading', payload.loading)
-            break;
+            break
 
         case SIGN_IN_ERROR: debugger
             return state
                 .set('error', payload.error)
                 .set('loading', false)
-            break;
+            break
 
         case SIGN_OUT_SUCCESS:
             return state.set('user', null)
-            break;
+            break
 
         default:
             return state
@@ -74,6 +75,10 @@ export const loadingSelector = (state) => state[moduleName].loading
 export const isAuthorizedSelector = createSelector(
     userSelector,
     (user) => !!user
+)
+export const userIdSelector = createSelector(
+    userSelector,
+    (user) => user ? user.id : null
 )
 
 /**
@@ -127,7 +132,7 @@ export function* signInSaga({ payload }) {
 }
 
 export function* checkAccessTokenSaga() {
-    
+
     const token = yield call(LocalStorageHelper.getAccessTokenFromStorage)
 
     if(!token) return

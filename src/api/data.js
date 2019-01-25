@@ -47,5 +47,48 @@ export const newsData = {
             }
         ]
     }
-
 }
+
+export const profileData = [
+    {
+        userId: '1',
+        answer: {
+            "status": "ok",
+            "data": {
+                "userId": '1',
+                "email": 'max@test.com',
+                "city": "Москва",
+                "languages": [
+                    "English",
+                    "Русский"
+                ],
+                "social": [
+                    {
+                        "label": "vk",
+                        "link": "vk.com/maxpfrontend"
+                    },
+                    {
+                        "label": "telegram",
+                        "link": "t.me/maxpfrontend"
+                    },
+                    {
+                        "label": "web",
+                        "link": "https://maxpfrontend.ru"
+                    },
+                    {
+                        "label": "youtube",
+                        "link": "https://www.youtube.com/channel/UCqJyAVWwIqPWKEkfCSP1y4Q"
+                    },
+                    {
+                        "label": "twitter",
+                        "link": "https://twitter.com/MaxPatsiansky"
+                    },
+                    {
+                        "label": "twitch",
+                        "link": "http://twich.tv/maxpfrontend"
+                    }
+                ]
+            }
+        }
+    }
+]
