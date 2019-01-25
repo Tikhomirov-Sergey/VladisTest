@@ -1,7 +1,7 @@
 import { appName } from '../config'
 import { createSelector } from 'reselect'
 import { Record } from 'immutable'
-import { call, put, takeEvery, take, all, apply } from 'redux-saga/effects'
+import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { replace } from 'connected-react-router'
 
@@ -17,6 +17,8 @@ const prefix = `${appName}/${moduleName}`
 
 export const SIGN_IN_REQUEST = `${prefix}/SIGN_IN_REQUEST`
 export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
+
+export const SIGN_LOADING = `${prefix}/SIGN_LOADING`
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
 
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
@@ -27,7 +29,8 @@ export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
 
 export const ReducerRecord = Record({
     user: null,
-    error: null
+    error: null,
+    loading: false
 })
 
 export default function reducer(state = new ReducerRecord(), action) {
@@ -39,10 +42,17 @@ export default function reducer(state = new ReducerRecord(), action) {
             return state
                 .set('user', payload.user)
                 .set('error', null)
+                .set('loading', false)
             break;
 
-        case SIGN_IN_ERROR:debugger
-            return state.set('error', payload.error)
+        case SIGN_LOADING:
+            return state.set('loading', payload.loading)
+            break;
+
+        case SIGN_IN_ERROR: debugger
+            return state
+                .set('error', payload.error)
+                .set('loading', false)
             break;
 
         case SIGN_OUT_SUCCESS:
@@ -60,6 +70,7 @@ export default function reducer(state = new ReducerRecord(), action) {
 
 export const userSelector = (state) => state[moduleName].user
 export const errorSelector = (state) => state[moduleName].error
+export const loadingSelector = (state) => state[moduleName].loading
 export const isAuthorizedSelector = createSelector(
     userSelector,
     (user) => !!user
@@ -92,18 +103,23 @@ export function* signInSaga({ payload }) {
     const { email, password } = payload
     const api = new Api
 
+    yield put({
+        type: SIGN_LOADING,
+        payload: { loading: true }
+    })
+
     const answer = yield call(api.singInApi, email, password)
 
     if (answer.status === 'ok') {
         yield put({
             type: SIGN_IN_SUCCESS,
-            payload: { user: answer.data }
+            payload: { user: answer.data, loading: false }
         })
     }
     else {
         yield put({
             type: SIGN_IN_ERROR,
-            payload: { error: answer.message }
+            payload: { error: answer.message, loading: false }
         })
     }
 }
