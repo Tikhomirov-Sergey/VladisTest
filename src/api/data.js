@@ -3,20 +3,24 @@ export const userData = {
         {
             email: 'max@test.com',
             password: '12345',
+            accessToken: '567830a0-ce96-4c10-863f-ffda868bcbf2',
             answer: {
                 status: 'ok',
                 data: {
-                    id: 1
+                    id: 1,
+                    accessToken: '567830a0-ce96-4c10-863f-ffda868bcbf2',
                 }
             }
         },
         {
             email: '1@1',
             password: '1',
+            accessToken: '567830a0-ce96-4c10-863f-ffda868bcbf3',
             answer: {
                 status: 'ok',
                 data: {
-                    id: 2
+                    id: 2,
+                    accessToken: '567830a0-ce96-4c10-863f-ffda868bcbf3',
                 }
             }
         }
@@ -24,7 +28,6 @@ export const userData = {
     error: {
         status: "err",
         message: "Неверный логин или пароль"
-
     }
 }
 

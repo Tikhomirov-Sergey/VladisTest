@@ -6,6 +6,7 @@ import { eventChannel } from 'redux-saga'
 import { replace } from 'connected-react-router'
 
 import Api from '../api'
+import LocalStorageHelper from '../code/localStorageHelper'
 
 /**
  * Constants
@@ -105,10 +106,13 @@ export function* signInSaga({ payload }) {
         type: SIGN_LOADING,
         payload: { loading: true }
     })
-    debugger
+
     const answer = yield call(Api.singIn, email, password)
 
     if (answer.status === 'ok') {
+
+        LocalStorageHelper.setAccessTokenToStorage(answer.data.accessToken)
+
         yield put({
             type: SIGN_IN_SUCCESS,
             payload: { user: answer.data, loading: false }
@@ -122,6 +126,32 @@ export function* signInSaga({ payload }) {
     }
 }
 
+export function* checkAccessTokenSaga() {
+    
+    const token = yield call(LocalStorageHelper.getAccessTokenFromStorage)
+
+    if(!token) return
+
+    const answer = yield call(Api.checkAccessToken, token)
+
+    if (answer.status === 'ok') {
+
+        LocalStorageHelper.setAccessTokenToStorage(answer.data.acceessToken)
+
+        yield put({
+            type: SIGN_IN_SUCCESS,
+            payload: { user: answer.data }
+        })
+    }
+    else 
+    {
+        LocalStorageHelper.clearAccessToken()
+    }
+}
+
 export function* saga() {
-    yield all([takeEvery(SIGN_IN_REQUEST, signInSaga)])
+    yield all([
+        takeEvery(SIGN_IN_REQUEST, signInSaga),
+        checkAccessTokenSaga()
+    ])
 }

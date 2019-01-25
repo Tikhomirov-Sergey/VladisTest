@@ -6,7 +6,7 @@ class Api {
 
     const promise = new Promise((resolve, reject) => {
 
-      setTimeout(() => {
+      setTimeout(() => {debugger
 
         /*if (Api.isRandomError())
           reject(Api.errorServer)*/
@@ -19,6 +19,27 @@ class Api {
         else {
           resolve(userData.error)
         }
+      }, 1000)
+    })
+
+    return promise
+  }
+
+  static checkAccessToken(accessToken) {
+
+    const promise = new Promise((resolve, reject) => {
+
+      setTimeout(() => {
+        
+        const user = userData.users.filter(user => accessToken === user.accessToken)
+
+        if (user.length === 1) {
+          resolve(user[0].answer)
+        }
+        else {
+          resolve(userData.error)
+        }
+
       }, 1000)
     })
 

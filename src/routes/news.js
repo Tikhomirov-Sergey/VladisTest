@@ -9,8 +9,7 @@ import NewsItem from '../components/news/news-item'
 class News extends Component {
 
   componentDidMount() {
-    if(!this.props.news)
-      this.props.loadNews()
+    this.props.loadNews()
   }
 
   render() {
@@ -21,20 +20,20 @@ class News extends Component {
         </Container>
       )
 
-      if(!this.props.news.length)
+    if (!this.props.news.length)
       return (
         <Container>
           <h4>Увы, новостей сегодня нет =((</h4>
         </Container>
       )
 
-      return (
-        <Container>
-          {
-            this.props.news.map(item => <NewsItem {...item} key={item.id}/>)
-          }
-        </Container>
-      )
+    return (
+      <Container>
+        {
+          this.props.news.map(item => <NewsItem {...item} key={item.id} />)
+        }
+      </Container>
+    )
   }
 }
 

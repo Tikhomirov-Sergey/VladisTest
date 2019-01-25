@@ -1,9 +1,6 @@
 import { appName } from '../config'
-import { createSelector } from 'reselect'
-import { Record } from 'immutable'
+import { Record, OrderedMap } from 'immutable'
 import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
-import { eventChannel } from 'redux-saga'
-import { replace } from 'connected-react-router'
 
 import Api from '../api'
 
@@ -25,9 +22,10 @@ export const LOAD_NEWS_ERROR = `${prefix}/LOAD_NEWS_ERROR`
  * */
 
 export const ReducerRecord = Record({
-    news: null,
+    news: new OrderedMap(),
     error: null,
-    loading: false
+    loading: false,
+    loaded: false
 })
 
 export default function reducer(state = new ReducerRecord(), action) {
@@ -39,6 +37,7 @@ export default function reducer(state = new ReducerRecord(), action) {
             return state
                 .set('news', payload.news)
                 .set('loading', false)
+                .set('loaded', true)
             break;
         
         case START_NEWS_LOADING:
@@ -57,6 +56,7 @@ export default function reducer(state = new ReducerRecord(), action) {
 
 export const newsSelector = (state) => state[moduleName].news
 export const loadingSelector = (state) => state[moduleName].loading
+export const loadedSelector = (state) => state[moduleName].loaded
 
 /**
  * Action Creators
@@ -75,9 +75,10 @@ export function loadNews() {
 
 export function* loadNewsSaga() {
     
+        if(yield select(loadedSelector)) return
+
         yield put({
-            type: START_NEWS_LOADING,
-            payload: { }
+            type: START_NEWS_LOADING
         })
     
         const answer = yield call(Api.getNews)
