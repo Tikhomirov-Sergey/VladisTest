@@ -6,7 +6,6 @@ import { eventChannel } from 'redux-saga'
 import { replace } from 'connected-react-router'
 
 import Api from '../api'
-import { isNull } from 'util';
 
 /**
  * Constants
@@ -101,14 +100,13 @@ export function signOut() {
 export function* signInSaga({ payload }) {
 
     const { email, password } = payload
-    const api = new Api
 
     yield put({
         type: SIGN_LOADING,
         payload: { loading: true }
     })
-
-    const answer = yield call(api.singInApi, email, password)
+    debugger
+    const answer = yield call(Api.singIn, email, password)
 
     if (answer.status === 'ok') {
         yield put({

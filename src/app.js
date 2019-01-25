@@ -4,7 +4,7 @@ import { Route, NavLink, Switch } from 'react-router-dom'
 import ProtectedRoute from './components/common/protected-route'
 
 import Nav from './components/common/nav'
-import Auth from './components/auth'
+import Auth from './routes/auth'
 import Profile from './routes/profile'
 import News from './routes/news'
 

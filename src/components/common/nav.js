@@ -5,12 +5,14 @@ import { isAuthorizedSelector, signOut } from '../../ducks/auth'
 
 let menuItems = [
     {
-        to: "",
-        text: "Новости"
+        id: 'news',
+        to: '',
+        text: 'Новости'
     },
     {
-        to: "profile",
-        text: "Профиль"
+        id: 'profile',
+        to: 'profile',
+        text: 'Профиль'
     }
 ]
 
@@ -20,12 +22,12 @@ class Navigation extends Component {
     render() {
         return (
             <nav>
-                <div class="nav-wrapper">
-                    <ul class="right">
+                <div className="nav-wrapper">
+                    <ul className="right">
 
                         {
                             menuItems.map(item =>
-                                <li>
+                                <li key={item.id}>
                                     <NavLink to={`/${item.to}`}>{item.text}</NavLink>
                                 </li>
                             )

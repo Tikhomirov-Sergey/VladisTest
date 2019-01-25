@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { signIn, isAuthorizedSelector, errorSelector, loadingSelector } from '../../ducks/auth'
+import { signIn, isAuthorizedSelector, errorSelector, loadingSelector } from '../ducks/auth'
 import { Redirect } from 'react-router-dom'
 import { Row, Input, Container, Button } from 'react-materialize'
 
-import Preloader from '../common/preloader'
+import Preloader from '../components/common/preloader'
 
 class Auth extends Component {
 
@@ -32,7 +32,7 @@ class Auth extends Component {
 
     if (this.props.loading)
       return (
-        <Container className='login-form-container'>
+        <Container className='full-page-container'>
           <Preloader />
         </Container>
       )
@@ -41,7 +41,7 @@ class Auth extends Component {
       return <Redirect to="/" />
 
     return (
-      <Container className='login-form-container'>
+      <Container className='full-page-container'>
         <form className='login-form' onSubmit={this.signIn}>
           <Row>
             <Input type="email" label="Email" s={6} validate required defaultValue={this.email} ref={this.emailRef} />
