@@ -2,11 +2,10 @@ import { appName } from '../config'
 import { createSelector } from 'reselect'
 import { Record } from 'immutable'
 import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
-import { eventChannel } from 'redux-saga'
-import { replace } from 'connected-react-router'
+import { REMOVE_PROFILE } from './profile'
 
 import Api from '../api'
-import LocalStorageHelper from '../code/localStorageHelper'
+import LocalStorageHelper from '../code/LocalStorageHelper'
 
 /**
  * Constants
@@ -22,6 +21,7 @@ export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
 export const SIGN_LOADING = `${prefix}/SIGN_LOADING`
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
 
+export const SIGN_OUT_REQUEST = `${prefix}/SIGN_OUT_REQUEST`
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
 
 /**
@@ -94,8 +94,7 @@ export function signIn(email, password) {
 
 export function signOut() {
     return {
-        type: SIGN_OUT_SUCCESS,
-        payload: null
+        type: SIGN_OUT_REQUEST
     }
 }
 
@@ -154,9 +153,21 @@ export function* checkAccessTokenSaga() {
     }
 }
 
+export function* signOutSaga() {
+
+    yield put({
+        type: SIGN_OUT_SUCCESS
+    })
+
+    yield put({
+        type: REMOVE_PROFILE
+    })
+}
+
 export function* saga() {
     yield all([
         takeEvery(SIGN_IN_REQUEST, signInSaga),
-        checkAccessTokenSaga()
+        checkAccessTokenSaga(),
+        takeEvery(SIGN_OUT_REQUEST, signOutSaga)
     ])
 }

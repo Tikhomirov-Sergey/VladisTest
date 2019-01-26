@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Container, Col, Card } from 'react-materialize'
 
 import Preloader from '../components/common/preloader'
-import ListItemLabel from '../components/profile/list-item-label'
+import ProfileCard from '../components/profile/profile-card'
 
 class Profile extends Component {
 
@@ -27,16 +27,11 @@ class Profile extends Component {
           <h4>Профиль не найден =((</h4>
         </Container>
       )
-
+debugger
     return (
-      <div>
         <Container>
-          <Card title={this.props.email}>
-            <ListItemLabel title='Город' textIsRequired text={this.props.city} />
-            
-          </Card>
+          <ProfileCard {...this.props.profile} />
         </Container>
-      </div>
     )
   }
 }

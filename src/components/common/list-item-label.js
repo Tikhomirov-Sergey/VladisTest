@@ -5,12 +5,13 @@ class ListItemSpan extends Component {
 
     render() {
 
-        if(this.props.textIsRequired && !this.props.text)
+        if(this.props.textIsRequired && !this.props.children)
             return null
 
         return (
             <Row>
-                <span>{this.props.title}: {this.props.text}</span>
+                {this.props.title && <span>{this.props.title}: </span>}
+                {this.props.children}
             </Row>
         )
     }

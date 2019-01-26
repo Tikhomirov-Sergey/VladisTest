@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Col, Card } from 'react-materialize'
 
 class NewsItem extends Component {
@@ -16,3 +17,8 @@ class NewsItem extends Component {
 }
 
 export default NewsItem
+
+NewsItem.PropTypes = {
+    title: PropTypes.string,
+    text: PropTypes.string.isRequired
+}
