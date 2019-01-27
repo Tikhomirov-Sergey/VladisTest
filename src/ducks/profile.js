@@ -1,6 +1,6 @@
 import { appName } from '../config'
-import { Record, OrderedMap } from 'immutable'
-import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
+import { Record } from 'immutable'
+import { call, put, takeEvery, all, select } from 'redux-saga/effects'
 import { userIdSelector } from './auth'
 
 import Api from '../api'
@@ -42,18 +42,15 @@ export default function reducer(state = new ReducerRecord(), action) {
                 .set('profile', payload.profile)
                 .set('loading', false)
                 .set('loaded', true)
-            break
         
         case START_PROFILE_LOADING:
             return state
                 .set('loading', true)
-            break
 
         case REMOVE_PROFILE:
             return state
                 .set('profile', null)
                 .set('loaded', false)
-            break
 
         default:
             return state

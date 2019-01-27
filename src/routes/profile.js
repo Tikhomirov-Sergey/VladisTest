@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { loadProfile, profileSelector, loadingSelector, loadedSelector } from '../ducks/profile'
 import { connect } from 'react-redux'
-import { Container, Col, Card } from 'react-materialize'
+import { Container } from 'react-materialize'
 
 import Preloader from '../components/common/preloader'
 import ProfileCard from '../components/profile/profile-card'
@@ -27,7 +27,7 @@ class Profile extends Component {
           <h4>Профиль не найден =((</h4>
         </Container>
       )
-debugger
+      
     return (
         <Container>
           <ProfileCard {...this.props.profile} />

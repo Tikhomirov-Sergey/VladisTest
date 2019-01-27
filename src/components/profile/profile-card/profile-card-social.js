@@ -12,7 +12,7 @@ class ProfileCardSocial extends Component {
             <ListItemLabel title='Ссылки' textIsRequired>
                 {
                     this.props.social && this.props.social.map(item =>
-                        <Row className='profile-card__list-item'>
+                        <Row className='profile-card__list-item' key={item.link}>
                             <a target='_blank' className={SocialHelper.getSocialIconClass(item.label)} href={SocialHelper.getValidLink(item.link)}>{item.label}</a>
                         </Row>
                     )

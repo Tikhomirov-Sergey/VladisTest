@@ -6,7 +6,7 @@ class Api {
 
     const promise = new Promise((resolve, reject) => {
 
-      setTimeout(() => {debugger
+      setTimeout(() => {
 
         /*if (Api.isRandomError())
           reject(Api.errorServer)*/
@@ -66,7 +66,7 @@ class Api {
 
     const promise = new Promise((resolve, reject) => {
 
-      setTimeout(() => {debugger
+      setTimeout(() => {
 
         const profile = profileData.filter(profile => Number.parseInt(id) === Number.parseInt(profile.userId))
 

@@ -1,8 +1,9 @@
 import { appName } from '../config'
 import { createSelector } from 'reselect'
 import { Record } from 'immutable'
-import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
+import { call, put, takeEvery, all } from 'redux-saga/effects'
 import { REMOVE_PROFILE } from './profile'
+import { NEW_ERROR_REQUEST } from './error'
 
 import Api from '../api'
 import LocalStorageHelper from '../code/LocalStorageHelper'
@@ -19,7 +20,6 @@ export const SIGN_IN_REQUEST = `${prefix}/SIGN_IN_REQUEST`
 export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
 
 export const SIGN_LOADING = `${prefix}/SIGN_LOADING`
-export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
 
 export const SIGN_OUT_REQUEST = `${prefix}/SIGN_OUT_REQUEST`
 export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
@@ -30,7 +30,6 @@ export const SIGN_OUT_SUCCESS = `${prefix}/SIGN_OUT_SUCCESS`
 
 export const ReducerRecord = Record({
     user: null,
-    error: null,
     loading: false
 })
 
@@ -44,21 +43,12 @@ export default function reducer(state = new ReducerRecord(), action) {
                 .set('user', payload.user)
                 .set('error', null)
                 .set('loading', false)
-            break
 
         case SIGN_LOADING:
             return state.set('loading', payload.loading)
-            break
-
-        case SIGN_IN_ERROR: debugger
-            return state
-                .set('error', payload.error)
-                .set('loading', false)
-            break
 
         case SIGN_OUT_SUCCESS:
             return state.set('user', null)
-            break
 
         default:
             return state
@@ -111,6 +101,8 @@ export function* signInSaga({ payload }) {
         payload: { loading: true }
     })
 
+    throw "Error2";
+
     const answer = yield call(Api.singIn, email, password)
 
     if (answer.status === 'ok') {
@@ -123,9 +115,15 @@ export function* signInSaga({ payload }) {
         })
     }
     else {
+
         yield put({
-            type: SIGN_IN_ERROR,
-            payload: { error: answer.message, loading: false }
+            type: SIGN_LOADING,
+            payload: { loading: false }
+        })
+
+        yield put({
+            type: NEW_ERROR_REQUEST,
+            payload: { message: answer.message }
         })
     }
 }

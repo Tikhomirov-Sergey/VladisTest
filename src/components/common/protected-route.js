@@ -10,8 +10,8 @@ class ProtectedRoute extends Component {
   }
 
   getComponent = () => {
-    const { isAuthorized, ...rest } = this.props
-    return isAuthorized ? <Route {...rest} /> : <Redirect to="/signin" />
+    const { isAuthorized, path, ...rest } = this.props
+    return isAuthorized ? <Route {...rest} path={path} /> : <Redirect to="/signin" fromLink={path} />
   }
 }
 

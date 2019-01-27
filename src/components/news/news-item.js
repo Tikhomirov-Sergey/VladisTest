@@ -7,7 +7,7 @@ class NewsItem extends Component {
     render() {
 
         return (
-            <Col s={12}>
+            <Col s={12} key={this.props.id}>
                 <Card title={this.props.title}>
                     {this.props.text}
                 </Card>
@@ -19,6 +19,7 @@ class NewsItem extends Component {
 export default NewsItem
 
 NewsItem.PropTypes = {
+    id: PropTypes.string.isRequired,
     title: PropTypes.string,
     text: PropTypes.string.isRequired
 }

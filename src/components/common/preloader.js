@@ -1,5 +1,5 @@
-import React, { Fragment, Component } from 'react'
-import { Container, Preloader as PreloaderMaterialize } from 'react-materialize'
+import React, { Component } from 'react'
+import { Preloader as PreloaderMaterialize } from 'react-materialize'
 
 class Preloader extends Component {
 

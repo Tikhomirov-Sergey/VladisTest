@@ -1,7 +1,6 @@
 .full-page-container {
     display: flex;
     height: calc(100vh - 100px);
-
     .login-form {
         margin: auto;
     }
@@ -11,16 +10,38 @@
     display: flex;
     width: 100%;
     height: 100%;
-    
     .preloader-wrapper {
         margin: auto;
     }
 }
 
 .profile-card {
-
     .profile-card__list-item {
-
         margin-bottom: 0;
+    }
+}
+
+.toast-container {
+
+    width: 300px;
+    height: calc(100vh - 100px);
+    position: fixed;
+    right: 0;
+    margin-right: 30px;
+    z-index: 1000;
+    .toast {
+        
+        display: flex;
+        background-color: #ee6e73;
+        width: 100%;
+        height:auto;
+
+        .toast__toast-text {
+            margin: auto;
+        }
+
+        &:hover {
+            opacity: 0.7;
+        }
     }
 }

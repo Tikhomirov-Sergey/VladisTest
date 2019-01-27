@@ -1,6 +1,6 @@
 import { appName } from '../config'
 import { Record, OrderedMap } from 'immutable'
-import { call, put, takeEvery, take, all, apply, select } from 'redux-saga/effects'
+import { call, put, takeEvery, all, select } from 'redux-saga/effects'
 
 import Api from '../api'
 
@@ -39,12 +39,10 @@ export default function reducer(state = new ReducerRecord(), action) {
                 .set('news', payload.news)
                 .set('loading', false)
                 .set('loaded', true)
-            break
         
         case START_NEWS_LOADING:
             return state
                 .set('loading', true)
-            break
 
         default:
             return state
