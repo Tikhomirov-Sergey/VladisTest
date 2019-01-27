@@ -1,7 +1,9 @@
 import { appName } from '../config'
 import { Record } from 'immutable'
 import { call, put, takeEvery, all, select } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import { userIdSelector } from './auth'
+import { NEW_ERROR_REQUEST } from './error'
 
 import Api from '../api'
 
@@ -42,7 +44,7 @@ export default function reducer(state = new ReducerRecord(), action) {
                 .set('profile', payload.profile)
                 .set('loading', false)
                 .set('loaded', true)
-        
+
         case START_PROFILE_LOADING:
             return state
                 .set('loading', true)
@@ -74,39 +76,56 @@ export function loadProfile() {
         type: LOAD_PROFILE_REQUEST,
         payload: {}
     }
-} 
+}
 
 /**
  * Sagas
  **/
 
 export function* loadProfileSaga() {
-    
-        if(yield select(loadedSelector)) return
 
-        const id = yield select(userIdSelector)
+    if (yield select(loadedSelector)) return
 
-        yield put({
-            type: START_PROFILE_LOADING
-        })
-    
-        const answer = yield call(Api.getProfile, id)
-    
-        if (answer.status === 'ok') {debugger
-            yield put({
-                type: LOAD_PROFILE_SUCCESS,
-                payload: { profile: answer.data }
-            })
+    const id = yield select(userIdSelector)
+
+    yield put({
+        type: START_PROFILE_LOADING
+    })
+
+    let serverResponded = false
+
+    while (!serverResponded) {
+
+        try {
+
+            const answer = yield call(Api.getProfile, id)
+
+            if (answer.status === 'ok') {
+                yield put({
+                    type: LOAD_PROFILE_SUCCESS,
+                    payload: { profile: answer.data }
+                })
+            }
+            else {
+                yield put({
+                    type: LOAD_PROFILE_ERROR,
+                    payload: { error: "Профиль не найден" }
+                })
+            }
+
+            serverResponded = true
         }
-        else {
+        catch {
             yield put({
-                type: LOAD_PROFILE_ERROR,
-                payload: { error: "Профиль не найден" }
+                type: NEW_ERROR_REQUEST,
+                payload: { message: 'Сервер не отвечает, пробуем ещё раз' }
             })
+
+            yield delay(2000)
         }
     }
-    
-    export function* saga() {
-        yield all([takeEvery(LOAD_PROFILE_REQUEST, loadProfileSaga)])
-    }
-    
+}
+
+export function* saga() {
+    yield all([takeEvery(LOAD_PROFILE_REQUEST, loadProfileSaga)])
+}

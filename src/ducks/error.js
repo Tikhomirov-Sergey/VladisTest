@@ -29,7 +29,7 @@ export const ReducerRecord = Record({
 export const errorRecord = Record({
     id: null,
     message: null
-  })
+})
 
 export default function reducer(state = new ReducerRecord(), action) {
     const { type, payload } = action
@@ -59,12 +59,12 @@ export const errorListSelector = createSelector(errorSelector, errors => errors.
  * Action Creators
  * */
 
- export function closeError(id) {
+export function closeError(id) {
     return {
         type: CLOSE_ERROR,
         payload: { id }
     }
- }
+}
 
 /**
  * Sagas

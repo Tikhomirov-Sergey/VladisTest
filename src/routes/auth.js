@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { signIn, isAuthorizedSelector, errorSelector, loadingSelector } from '../ducks/auth'
+import { signIn, isAuthorizedSelector, loadingSelector } from '../ducks/auth'
 import { Redirect } from 'react-router-dom'
 import { Row, Input, Container, Button } from 'react-materialize'
 
@@ -59,7 +59,6 @@ class Auth extends Component {
 export default connect(
   (state) => ({
     isAuthorized: isAuthorizedSelector(state),
-    error: errorSelector(state),
     loading: loadingSelector(state)
   }),
   { signIn }

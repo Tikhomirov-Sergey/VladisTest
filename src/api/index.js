@@ -8,8 +8,8 @@ class Api {
 
       setTimeout(() => {
 
-        /*if (Api.isRandomError())
-          reject(Api.errorServer)*/
+        if (Api.isRandomError())
+          reject(Api.errorServer)
 
         const user = userData.users.filter(user => email === user.email && password === user.password)
 
@@ -51,8 +51,8 @@ class Api {
 
       setTimeout(() => {
 
-        /*if (Api.isRandomError())
-          reject(Api.errorServer)*/
+        if (Api.isRandomError())
+          reject(Api.errorServer)
 
         resolve(newsData.answer)
 
@@ -67,6 +67,9 @@ class Api {
     const promise = new Promise((resolve, reject) => {
 
       setTimeout(() => {
+
+        if (Api.isRandomError())
+          reject(Api.errorServer)
 
         const profile = profileData.filter(profile => Number.parseInt(id) === Number.parseInt(profile.userId))
 

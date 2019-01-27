@@ -1,7 +1,8 @@
 import { appName } from '../config'
 import { createSelector } from 'reselect'
 import { Record } from 'immutable'
-import { call, put, takeEvery, all } from 'redux-saga/effects'
+import { call, put, takeEvery, all, cancel } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
 import { REMOVE_PROFILE } from './profile'
 import { NEW_ERROR_REQUEST } from './error'
 
@@ -41,7 +42,6 @@ export default function reducer(state = new ReducerRecord(), action) {
         case SIGN_IN_SUCCESS:
             return state
                 .set('user', payload.user)
-                .set('error', null)
                 .set('loading', false)
 
         case SIGN_LOADING:
@@ -60,7 +60,6 @@ export default function reducer(state = new ReducerRecord(), action) {
  * */
 
 export const userSelector = (state) => state[moduleName].user
-export const errorSelector = (state) => state[moduleName].error
 export const loadingSelector = (state) => state[moduleName].loading
 export const isAuthorizedSelector = createSelector(
     userSelector,
@@ -101,30 +100,47 @@ export function* signInSaga({ payload }) {
         payload: { loading: true }
     })
 
-    throw "Error2";
+    let serverResponded = false
 
-    const answer = yield call(Api.singIn, email, password)
+    while (!serverResponded) {
 
-    if (answer.status === 'ok') {
+        try {
 
-        LocalStorageHelper.setAccessTokenToStorage(answer.data.accessToken)
+            const answer = yield call(Api.singIn, email, password)
 
-        yield put({
-            type: SIGN_IN_SUCCESS,
-            payload: { user: answer.data, loading: false }
-        })
-    }
-    else {
+            if (answer.status === 'ok') {
 
-        yield put({
-            type: SIGN_LOADING,
-            payload: { loading: false }
-        })
+                LocalStorageHelper.setAccessTokenToStorage(answer.data.accessToken)
 
-        yield put({
-            type: NEW_ERROR_REQUEST,
-            payload: { message: answer.message }
-        })
+                yield put({
+                    type: SIGN_IN_SUCCESS,
+                    payload: { user: answer.data, loading: false }
+                })
+            }
+            else {
+
+                yield put({
+                    type: SIGN_LOADING,
+                    payload: { loading: false }
+                })
+
+                yield put({
+                    type: NEW_ERROR_REQUEST,
+                    payload: { message: answer.message }
+                })
+            }
+
+            serverResponded = true
+        }
+        catch
+        {
+            yield put({
+                type: NEW_ERROR_REQUEST,
+                payload: { message: 'Сервер не отвечает, пробуем ещё раз' }
+            })
+
+            yield delay(2000)
+        }
     }
 }
 
@@ -132,22 +148,28 @@ export function* checkAccessTokenSaga() {
 
     const token = yield call(LocalStorageHelper.getAccessTokenFromStorage)
 
-    if(!token) return
+    if (!token) return
 
-    const answer = yield call(Api.checkAccessToken, token)
+    try {
 
-    if (answer.status === 'ok') {
+        const answer = yield call(Api.checkAccessToken, token)
 
-        LocalStorageHelper.setAccessTokenToStorage(answer.data.acceessToken)
+        if (answer.status === 'ok') {
 
-        yield put({
-            type: SIGN_IN_SUCCESS,
-            payload: { user: answer.data }
-        })
+            LocalStorageHelper.setAccessTokenToStorage(answer.data.acceessToken)
+
+            yield put({
+                type: SIGN_IN_SUCCESS,
+                payload: { user: answer.data }
+            })
+        }
+        else {
+            LocalStorageHelper.clearAccessToken()
+        }
     }
-    else 
+    catch
     {
-        LocalStorageHelper.clearAccessToken()
+        cancel();
     }
 }
 

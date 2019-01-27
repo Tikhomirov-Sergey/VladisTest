@@ -1,6 +1,8 @@
 import { appName } from '../config'
 import { Record, OrderedMap } from 'immutable'
+import { delay } from 'redux-saga'
 import { call, put, takeEvery, all, select } from 'redux-saga/effects'
+import { NEW_ERROR_REQUEST } from './error'
 
 import Api from '../api'
 
@@ -24,7 +26,6 @@ export const LOAD_NEWS_ERROR = `${prefix}/LOAD_NEWS_ERROR`
 
 export const ReducerRecord = Record({
     news: new OrderedMap(),
-    error: null,
     loading: false,
     loaded: false
 })
@@ -34,12 +35,12 @@ export default function reducer(state = new ReducerRecord(), action) {
 
     switch (type) {
 
-        case LOAD_NEWS_SUCCESS:debugger
+        case LOAD_NEWS_SUCCESS: debugger
             return state
                 .set('news', payload.news)
                 .set('loading', false)
                 .set('loaded', true)
-        
+
         case START_NEWS_LOADING:
             return state
                 .set('loading', true)
@@ -66,37 +67,55 @@ export function loadNews() {
         type: LOAD_NEWS_REQUEST,
         payload: {}
     }
-} 
+}
 
 /**
  * Sagas
  **/
 
 export function* loadNewsSaga() {
-    
-        if(yield select(loadedSelector)) return
 
-        yield put({
-            type: START_NEWS_LOADING
-        })
-    
-        const answer = yield call(Api.getNews)
-    
-        if (answer.status === 'ok') {debugger
-            yield put({
-                type: LOAD_NEWS_SUCCESS,
-                payload: { news: answer.data }
-            })
+    if (yield select(loadedSelector)) return
+
+    yield put({
+        type: START_NEWS_LOADING
+    })
+
+    let serverResponded = false
+
+    while (!serverResponded) {
+
+        try {
+
+            const answer = yield call(Api.getNews)
+
+            if (answer.status === 'ok') {
+
+                yield put({
+                    type: LOAD_NEWS_SUCCESS,
+                    payload: { news: answer.data }
+                })
+            }
+            else {
+                yield put({
+                    type: NEW_ERROR_REQUEST,
+                    payload: { message: answer.message }
+                })
+            }
+
+            serverResponded = true
         }
-        else {
+        catch {
             yield put({
-                type: LOAD_NEWS_ERROR,
-                payload: { error: answer.message }
+                type: NEW_ERROR_REQUEST,
+                payload: { message: 'Сервер не отвечает, пробуем ещё раз' }
             })
+
+            yield delay(2000)
         }
     }
-    
-    export function* saga() {
-        yield all([takeEvery(LOAD_NEWS_REQUEST, loadNewsSaga)])
-    }
-    
+}
+
+export function* saga() {
+    yield all([takeEvery(LOAD_NEWS_REQUEST, loadNewsSaga)])
+}
