@@ -7,7 +7,7 @@ import { REMOVE_PROFILE } from './profile'
 import { NEW_ERROR_REQUEST } from './error'
 
 import Api from '../api'
-import LocalStorageHelper from '../code/LocalStorageHelper'
+import LocalStorageHelper from '../code/localStorageHelper'
 
 /**
  * Constants
